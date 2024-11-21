@@ -1,304 +1,144 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Comprehensive Blood Test Results</title>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.7.0/chart.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/lucide/0.263.1/lucide.min.js"></script>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            line-height: 1.6;
-            margin: 0;
-            padding: 20px;
-            background-color: #f4f4f4;
-        }
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            background-color: white;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 0 10px rgba(0,0,0,0.1);
-        }
-        h1, h2 {
-            color: #333;
-        }
-        .chart-container {
-            margin-bottom: 30px;
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: space-between;
-        }
-        .chart-item {
-            width: 48%;
-            margin-bottom: 20px;
-        }
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-bottom: 20px;
-        }
-        th, td {
-            padding: 10px;
-            border: 1px solid #ddd;
-            text-align: left;
-        }
-        th {
-            background-color: #f2f2f2;
-        }
-        .test-group {
-            margin-bottom: 40px;
-            border: 1px solid #ddd;
-            padding: 20px;
-            border-radius: 8px;
-        }
-        .organ-icon {
-            width: 24px;
-            height: 24px;
-            margin-right: 10px;
-            vertical-align: middle;
-        }
-        .result-normal { background-color: #e6ffe6; }
-        .result-low { background-color: #ffe6e6; }
-        .result-high { background-color: #fff2e6; }
-        .test-name {
-            display: flex;
-            align-items: center;
-        }
-    </style>
-</head>
-<body>
-    <div class="container">
-        <h1>Comprehensive Blood Test Results</h1>
-        
-        <div class="test-group">
-            <h2>Comprehensive Metabolic Panel</h2>
-            <div class="chart-container" id="cmpCharts">
-                <!-- Charts will be added here dynamically -->
-            </div>
-            <table id="cmpTable">
-                <thead>
-                    <tr>
-                        <th>Test</th>
-                        <th>Feb 25, 2022</th>
-                        <th>Jun 20, 2022</th>
-                        <th>Jan 11, 2023</th>
-                        <th>Feb 28, 2023</th>
-                        <th>Feb 14, 2024</th>
-                        <th>Normal Range</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <!-- Data will be populated by JavaScript -->
-                </tbody>
-            </table>
-        </div>
+import React from 'react';
+import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
+import { Alert, AlertTitle } from '@/components/ui/alert';
+import { Activity } from 'lucide-react';
+import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend } from 'recharts';
 
-        <div class="test-group">
-            <h2>Thyroid Function Tests</h2>
-            <div class="chart-container" id="thyroidCharts">
-                <!-- Charts will be added here dynamically -->
-            </div>
-            <table id="thyroidTable">
-                <thead>
-                    <tr>
-                        <th>Test</th>
-                        <th>Feb 25, 2022</th>
-                        <th>Jun 20, 2022</th>
-                        <th>Jan 11, 2023</th>
-                        <th>Feb 21, 2023</th>
-                        <th>Feb 14, 2024</th>
-                        <th>Normal Range</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <!-- Data will be populated by JavaScript -->
-                </tbody>
-            </table>
-        </div>
+const CBCDashboard = () => {
+  const cbcData = {
+    readings: [
+      {
+        date: "February 14, 2024",
+        tests: {
+          "WBC (White Blood Cells)": { value: 8.0, unit: "10e9/L", range: { min: 4.0, max: 11.0 } },
+          "RBC (Red Blood Cells)": { value: 5.07, unit: "10e12/L", range: { min: 4.57, max: 5.78 } },
+          "Hemoglobin": { value: 14.7, unit: "g/dL", range: { min: 13.8, max: 17.4 } },
+          "Hematocrit": { value: 43.8, unit: "%", range: { min: 40.9, max: 50.8 } },
+          "MCV": { value: 86.4, unit: "fL", range: { min: 81.5, max: 97.1 } },
+          "MCH": { value: 29.0, unit: "pg", range: { min: 27.2, max: 32.7 } },
+          "MCHC": { value: 33.6, unit: "g/dL", range: { min: 32.1, max: 35.9 } },
+          "Platelet Count": { value: 261, unit: "10e9/L", range: { min: 150, max: 400 } }
+        }
+      },
+      {
+        date: "January 11, 2023",
+        tests: {
+          "WBC (White Blood Cells)": { value: 7.5, unit: "10e9/L", range: { min: 4.0, max: 11.0 } },
+          "RBC (Red Blood Cells)": { value: 5.28, unit: "10e12/L", range: { min: 4.57, max: 5.78 } },
+          "Hemoglobin": { value: 15.5, unit: "g/dL", range: { min: 13.8, max: 17.4 } },
+          "Hematocrit": { value: 47.3, unit: "%", range: { min: 40.9, max: 50.8 } },
+          "MCV": { value: 89.6, unit: "fL", range: { min: 81.5, max: 97.1 } },
+          "MCH": { value: 29.4, unit: "pg", range: { min: 27.2, max: 32.7 } },
+          "MCHC": { value: 32.8, unit: "g/dL", range: { min: 32.1, max: 35.9 } },
+          "Platelet Count": { value: 314, unit: "10e9/L", range: { min: 150, max: 400 } }
+        }
+      }
+    ]
+  };
 
-        <div class="test-group">
-            <h2>Lipid Panel</h2>
-            <div class="chart-container" id="lipidCharts">
-                <!-- Charts will be added here dynamically -->
-            </div>
-            <table id="lipidTable">
-                <thead>
-                    <tr>
-                        <th>Test</th>
-                        <th>Aug 26, 2022</th>
-                        <th>Jan 11, 2023</th>
-                        <th>Feb 28, 2023</th>
-                        <th>Feb 14, 2024</th>
-                        <th>Normal Range</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <!-- Data will be populated by JavaScript -->
-                </tbody>
-            </table>
-        </div>
+  const chartData = cbcData.readings.map(reading => ({
+    date: reading.date,
+    "WBC": reading.tests["WBC (White Blood Cells)"].value,
+    "RBC": reading.tests["RBC (Red Blood Cells)"].value,
+    "Platelets": reading.tests["Platelet Count"].value / 100, // Scaled for visualization
+    "Hemoglobin": reading.tests["Hemoglobin"].value,
+  }));
 
-        <div class="test-group">
-            <h2>GFR Calculation</h2>
-            <div class="chart-container" id="gfrCharts">
-                <!-- Charts will be added here dynamically -->
+  const calculateStatusColor = (value, range) => {
+    if (value < range.min) return 'bg-yellow-50 border-yellow-200';
+    if (value > range.max) return 'bg-red-50 border-red-200';
+    return 'bg-emerald-50 border-emerald-200';
+  };
+
+  const calculatePercentInRange = (value, range) => {
+    const totalRange = range.max - range.min;
+    const valueInRange = value - range.min;
+    return Math.min(Math.max((valueInRange / totalRange) * 100, 0), 100);
+  };
+
+  return (
+    <div className="max-w-2xl mx-auto p-4">
+      <Alert className="mb-6 bg-blue-50">
+        <AlertTitle className="flex items-center gap-2">
+          <Activity className="w-5 h-5" />
+          Complete Blood Count Results
+        </AlertTitle>
+      </Alert>
+
+      <Card className="shadow-lg mb-6">
+        <CardHeader className="bg-gray-50">
+          <CardTitle>Blood Count Trends</CardTitle>
+        </CardHeader>
+        <CardContent className="pt-4">
+          <div className="h-64 w-full">
+            <ResponsiveContainer>
+              <LineChart data={chartData} margin={{ top: 5, right: 20, bottom: 5, left: 0 }}>
+                <CartesianGrid strokeDasharray="3 3" />
+                <XAxis dataKey="date" />
+                <YAxis />
+                <Tooltip />
+                <Legend />
+                <Line type="monotone" dataKey="WBC" stroke="#10b981" strokeWidth={2} />
+                <Line type="monotone" dataKey="RBC" stroke="#3b82f6" strokeWidth={2} />
+                <Line type="monotone" dataKey="Platelets" stroke="#ef4444" strokeWidth={2} />
+                <Line type="monotone" dataKey="Hemoglobin" stroke="#8b5cf6" strokeWidth={2} />
+              </LineChart>
+            </ResponsiveContainer>
+          </div>
+        </CardContent>
+      </Card>
+
+      {cbcData.readings.map((reading, index) => (
+        <Card key={reading.date} className="shadow-lg mb-6">
+          <CardHeader className="bg-gray-50">
+            <CardTitle>{index === 0 ? 'Latest' : 'Historical'} Results - {reading.date}</CardTitle>
+          </CardHeader>
+          <CardContent className="pt-4">
+            <div className="space-y-4">
+              {Object.entries(reading.tests).map(([testName, test]) => (
+                <div 
+                  key={testName}
+                  className={`p-4 rounded-lg border ${calculateStatusColor(test.value, test.range)}`}
+                >
+                  <div className="flex justify-between items-center mb-2">
+                    <span className="font-medium">{testName}</span>
+                    <span className="text-gray-600">
+                      {test.value} {test.unit}
+                    </span>
+                  </div>
+                  <div className="w-full bg-gray-200 h-2 rounded-full overflow-hidden">
+                    <div 
+                      className="h-full bg-emerald-500"
+                      style={{
+                        width: `${calculatePercentInRange(test.value, test.range)}%`,
+                        transition: 'width 1s ease-in-out'
+                      }}
+                    />
+                  </div>
+                  <div className="flex justify-between text-xs text-gray-500 mt-1">
+                    <span>{test.range.min}</span>
+                    <span>{test.range.max}</span>
+                  </div>
+                </div>
+              ))}
             </div>
-            <table id="gfrTable">
-                <thead>
-                    <tr>
-                        <th>Test</th>
-                        <th>Feb 25, 2022</th>
-                        <th>Jun 20, 2022</th>
-                        <th>Jan 11, 2023</th>
-                        <th>Feb 28, 2023</th>
-                        <th>Feb 14, 2024</th>
-                        <th>Normal Range</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <!-- Data will be populated by JavaScript -->
-                </tbody>
-            </table>
-        </div>
+
+            <div className="mt-6 p-4 bg-gray-50 rounded-lg">
+              <h3 className="font-medium mb-2">Understanding CBC Components:</h3>
+              <ul className="text-sm text-gray-600 space-y-2">
+                <li>• WBC: Immune system cells that fight infection</li>
+                <li>• RBC: Cells that carry oxygen throughout the body</li>
+                <li>• Hemoglobin: Protein in RBCs that carries oxygen</li>
+                <li>• Hematocrit: Percentage of blood volume made up of RBCs</li>
+                <li>• MCV/MCH/MCHC: Red blood cell size and hemoglobin content</li>
+                <li>• Platelets: Cell fragments important for blood clotting</li>
+              </ul>
+            </div>
+          </CardContent>
+        </Card>
+      ))}
     </div>
+  );
+};
 
-    <script>
-        const testData = {
-            cmp: {
-                glucose: { values: [76, 106, 93, 96, 99], unit: 'mg/dL', organ: 'Pancreas' },
-                creatinine: { values: [0.87, 0.84, 0.90, 0.96, 1.13], unit: 'mg/dL', organ: 'Kidney' },
-                bun: { values: [21, 18, 14, 12, 24], unit: 'mg/dL', organ: 'Kidney' },
-                sodium: { values: [139, 141, 137, 141, 139], unit: 'mmol/L', organ: 'Kidney' },
-                potassium: { values: [3.7, 3.6, 4.3, 4.0, 3.9], unit: 'mmol/L', organ: 'Kidney' },
-                chloride: { values: [104, 104, 105, 102, 105], unit: 'mmol/L', organ: 'Kidney' },
-                calcium: { values: [9.3, 9.5, 9.5, 10.0, 9.2], unit: 'mg/dL', organ: 'Bone' },
-                ast: { values: [25, 19, 19, 19, 23], unit: 'U/L', organ: 'Liver' },
-                alt: { values: [19, 14, 13, 15, 15], unit: 'U/L', organ: 'Liver' }
-            },
-            thyroid: {
-                tsh: { values: [1.439, 1.277, 0.880, 1.030, 1.722], unit: 'uIU/mL', organ: 'Thyroid' }
-            },
-            lipid: {
-                cholesterol: { values: [200, 200, 177, 199], unit: 'mg/dL', organ: 'Blood' },
-                triglycerides: { values: [54, 62, 72, 118], unit: 'mg/dL', organ: 'Blood' },
-                hdlCholesterol: { values: [65, 58, 58, 60], unit: 'mg/dL', organ: 'Blood' },
-                ldlCholesterol: { values: [null, 124, 105, 115], unit: 'mg/dL', organ: 'Blood' }
-            },
-            gfr: {
-                gfr: { values: [60, 60, 60, 60, 60], unit: 'mL/min', organ: 'Kidney' }
-            },
-            normalRanges: {
-                glucose: { min: 70, max: 100 },
-                creatinine: { min: 0.50, max: 1.20 },
-                bun: { min: 5, max: 21 },
-                sodium: { min: 135, max: 145 },
-                potassium: { min: 3.5, max: 5.5 },
-                chloride: { min: 98, max: 110 },
-                calcium: { min: 8.5, max: 10.5 },
-                ast: { min: 0, max: 34 },
-                alt: { min: 0, max: 55 },
-                tsh: { min: 0.350, max: 4.94 },
-                cholesterol: { min: 100, max: 200 },
-                triglycerides: { min: 30, max: 150 },
-                hdlCholesterol: { min: 40, max: 125 },
-                ldlCholesterol: { min: 0, max: 130 },
-                gfr: { min: 60, max: 120 }
-            }
-        };
-
-        function createChart(containerId, testName, data, normalRange) {
-            const chartContainer = document.getElementById(containerId);
-            const chartItem = document.createElement('div');
-            chartItem.className = 'chart-item';
-            const canvas = document.createElement('canvas');
-            chartItem.appendChild(canvas);
-            chartContainer.appendChild(chartItem);
-
-            const ctx = canvas.getContext('2d');
-            return new Chart(ctx, {
-                type: 'line',
-                data: {
-                    labels: Object.keys(testData).find(key => testData[key][testName]) === 'lipid' 
-                        ? ['Aug 26, 2022', 'Jan 11, 2023', 'Feb 28, 2023', 'Feb 14, 2024']
-                        : ['Feb 25, 2022', 'Jun 20, 2022', 'Jan 11, 2023', 'Feb 28, 2023', 'Feb 14, 2024'],
-                    datasets: [{
-                        label: `${testName.toUpperCase()} (${data.unit})`,
-                        data: data.values,
-                        borderColor: 'rgb(75, 192, 192)',
-                        tension: 0.1
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    scales: {
-                        y: {
-                            beginAtZero: false,
-                            min: normalRange.min,
-                            max: normalRange.max
-                        }
-                    },
-                    plugins: {
-                        title: {
-                            display: true,
-                            text: `${testName.toUpperCase()} (${data.unit})`
-                        }
-                    }
-                }
-            });
-        }
-
-        function getOrganIcon(organ) {
-            const iconMap = {
-                'Kidney': 'activity',
-                'Liver': 'activity',
-                'Pancreas': 'candy',
-                'Thyroid': 'triangle',
-                'Blood': 'droplets',
-                'Bone': 'bone'
-            };
-            return `<i data-lucide="${iconMap[organ] || 'activity'}" class="organ-icon"></i>`;
-        }
-
-        function getResultClass(value, min, max) {
-            if (value === null) return '';
-            if (value < min) return 'result-low';
-            if (value > max) return 'result-high';
-            return 'result-normal';
-        }
-
-        function populateTable(tableId, data, normalRanges) {
-            const table = document.getElementById(tableId);
-            const tbody = table.querySelector('tbody');
-            tbody.innerHTML = '';
-            Object.entries(data).forEach(([test, testData]) => {
-                const row = tbody.insertRow();
-                const testNameCell = row.insertCell();
-                testNameCell.innerHTML = `<div class="test-name">${getOrganIcon(testData.organ)}${test.toUpperCase()} (${testData.unit})</div>`;
-                testData.values.forEach((value, index) => {
-                    const cell = row.insertCell();
-                    cell.textContent = value !== null ? value : 'N/A';
-                    cell.className = getResultClass(value, normalRanges[test].min, normalRanges[test].max);
-                });
-                const rangeCell = row.insertCell();
-                rangeCell.textContent = `${normalRanges[test].min} - ${normalRanges[test].max}`;
-            });
-        }
-
-        // Create charts and populate tables
-        Object.entries(testData).forEach(([group, tests]) => {
-            if (group !== 'normalRanges') {
-                Object.entries(tests).forEach(([test, data]) => {
-                    createChart(`${group}Charts`, test, data, testData.normalRanges[test]);
-                });
-                populateTable(`${group}Table`, tests, testData.normalRanges);
-            }
-        });
-
-        // Initialize Lucide icons
-        lucide.createIcons();
-    </script>
-</body>
-</html>
+export default CBCDashboard;
